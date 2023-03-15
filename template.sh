@@ -35,28 +35,38 @@ create_file_template() {
   echo -e "#!/bin/bash \n#Purpose: \n#Version:1.0 \n#Created Date: $(date)\n#Modified Date: \n#Author: Sayantan Sinharay\n# START #\n\n\n\n# END #" >"$FILE"
 }
 
-echo -e "Enter the name of the file you want to create: \c"
-read -r file
+template() {
+  echo -e "\nEnter the name of the file you want to create: \c"
+  read -r file
 
-if [[ -z $file ]]; then
-  force_exit
-else
-  NEW_FILE=$(pwd)/$file.sh
-fi
+  if [[ -z $file ]]; then
+    force_exit
+  else
+    NEW_FILE=$(pwd)/$file.sh
+  fi
 
-if [[ -f $file.sh ]]; then
-  echo -e "The file already exists. Do you want to Overwrite it (y/n): \c"
-  read -r choice
-else
-  create_file_template "$NEW_FILE"
-  exit 0
-fi
+  create_file NEW_FILE
+}
 
-if [[ $choice = "y" ]]; then
-  create_file_template "$NEW_FILE"
-  exit 0
-else
-  exit 1
-fi
-
+create_file() {
+  local file=$1
+  if [[ -f $file.sh ]]; then
+    echo -e "\nThe file already exists. Do you want to Overwrite it (y/n): \c"
+    read -r choice
+    if [[ $choice = "y" ]]; then
+      create_file_template "$NEW_FILE"
+      exit 0
+    else
+      echo -e "\nDo you want create file with a different name (y/n): \c"
+      read -r choice
+      if [[ $choice = "y" ]]; then
+        template
+      fi
+      exit 1
+    fi
+  else
+    create_file_template "$NEW_FILE"
+    exit 0
+  fi
+}
 # END #
