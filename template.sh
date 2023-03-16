@@ -51,6 +51,8 @@ template() {
 create_file() {
   local file=$1
   if [[ -f $file.sh ]]; then
+    create_file_template "$NEW_FILE"
+  else
     echo -e "\nThe file already exists. Do you want to Overwrite it (y/n): \c"
     read -r choice
     if [[ $choice = "y" ]]; then
@@ -64,9 +66,10 @@ create_file() {
       fi
       exit 1
     fi
-  else
-    create_file_template "$NEW_FILE"
     exit 0
   fi
 }
+
+template
+
 # END #
